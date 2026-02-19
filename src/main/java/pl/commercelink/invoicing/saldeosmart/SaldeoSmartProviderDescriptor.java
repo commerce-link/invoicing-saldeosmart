@@ -22,10 +22,9 @@ public class SaldeoSmartProviderDescriptor implements InvoicingProviderDescripto
     @Override
     public List<ProviderField> configurationFields() {
         return List.of(
-                new ProviderField("apiUrl", "API URL", ProviderField.FieldType.TEXT, true, "https://app.saldeosmart.pl"),
+                new ProviderField("apiUrl", "API URL", ProviderField.FieldType.TEXT, true, "https://saldeo.brainshare.pl"),
                 new ProviderField("username", "Username", ProviderField.FieldType.TEXT, true, ""),
-                new ProviderField("apiToken", "API Token", ProviderField.FieldType.PASSWORD, true, ""),
-                new ProviderField("companyProgramId", "Company Program ID", ProviderField.FieldType.TEXT, true, "")
+                new ProviderField("apiToken", "API Token", ProviderField.FieldType.PASSWORD, true, "")
         );
     }
 
@@ -34,7 +33,7 @@ public class SaldeoSmartProviderDescriptor implements InvoicingProviderDescripto
         String apiUrl = configuration.get("apiUrl");
         String username = configuration.get("username");
         String apiToken = configuration.get("apiToken");
-        String companyProgramId = configuration.get("companyProgramId");
-        return new SaldeoSmartInvoicingProvider(apiUrl, username, apiToken, companyProgramId);
+        String sellerId = configuration.get("sellerId");
+        return new SaldeoSmartInvoicingProvider(apiUrl, username, apiToken, sellerId);
     }
 }

@@ -7,12 +7,11 @@ import java.util.List;
 
 public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
-    private final SaldeoSmartHttpClient httpClient;
-    private final String companyProgramId;
+    private final ContractorService contractorService;
 
     public SaldeoSmartInvoicingProvider(String apiUrl, String username, String apiToken, String companyProgramId) {
-        this.httpClient = new SaldeoSmartHttpClient(apiUrl, username, apiToken);
-        this.companyProgramId = companyProgramId;
+        SaldeoSmartHttpClient httpClient = new SaldeoSmartHttpClient(apiUrl, username, apiToken);
+        this.contractorService = new ContractorService(httpClient, companyProgramId);
     }
 
     @Override
@@ -52,11 +51,11 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     @Override
     public BillingParty fetchBillingPartyById(String billingPartyId) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return contractorService.fetchById(billingPartyId);
     }
 
     @Override
     public BillingParty fetchBillingPartyByShortcut(String billingPartyShortcut) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return contractorService.fetchByShortcut(billingPartyShortcut);
     }
 }
