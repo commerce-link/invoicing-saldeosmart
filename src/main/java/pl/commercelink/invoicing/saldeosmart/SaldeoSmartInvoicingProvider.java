@@ -29,11 +29,6 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
     }
 
     @Override
-    public Invoice fetchInvoiceWithPositions(String invoiceId, InvoiceDirection direction) {
-        return invoiceService.fetchById(invoiceId, direction);
-    }
-
-    @Override
     public List<Invoice> fetchInvoices(LocalDate dateFrom, LocalDate dateTo, InvoiceDirection direction) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
