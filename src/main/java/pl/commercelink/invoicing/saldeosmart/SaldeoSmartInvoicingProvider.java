@@ -34,7 +34,7 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     @Override
     public byte[] fetchInvoicePdf(String invoiceId) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return invoiceService.fetchPdf(invoiceId);
     }
 
     @Override

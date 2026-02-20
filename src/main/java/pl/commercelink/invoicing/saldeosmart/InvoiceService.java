@@ -17,6 +17,21 @@ class InvoiceService {
     }
 
     Invoice fetchById(String invoiceId, InvoiceDirection direction) {
+        InvoiceListByIdResponse response = fetchRawResponse(invoiceId);
+        InvoiceListByIdResponse.Invoice invoice = findInvoice(response, invoiceId);
+        return toInvoice(invoice, response.contractors, direction);
+    }
+
+    byte[] fetchPdf(String invoiceId) {
+        InvoiceListByIdResponse response = fetchRawResponse(invoiceId);
+        InvoiceListByIdResponse.Invoice invoice = findInvoice(response, invoiceId);
+        if (invoice.source == null || invoice.source.isBlank()) {
+            throw new RuntimeException("No PDF source for invoice: " + invoiceId);
+        }
+        return httpClient.downloadBytes(invoice.source);
+    }
+
+    private InvoiceListByIdResponse fetchRawResponse(String invoiceId) {
         InvoiceListByIdRequest request = InvoiceListByIdRequest.of(invoiceId);
         InvoiceListByIdResponse response = httpClient.post(
                 "/api/xml/3.0/invoice/listbyid",
@@ -27,14 +42,17 @@ class InvoiceService {
         if (!"OK".equals(response.status)) {
             throw new RuntimeException("invoice.listbyid failed: " + response.errorCode + " " + response.errorMessage);
         }
+        return response;
+    }
+
+    private InvoiceListByIdResponse.Invoice findInvoice(InvoiceListByIdResponse response, String invoiceId) {
         if (response.invoices == null || response.invoices.isEmpty()) {
             throw new RuntimeException("Invoice not found: " + invoiceId);
         }
-        InvoiceListByIdResponse.Invoice invoice = response.invoices.stream()
+        return response.invoices.stream()
                 .filter(i -> invoiceId.equals(i.invoiceId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Invoice not found in response: " + invoiceId));
-        return toInvoice(invoice, response.contractors, direction);
     }
 
     private Invoice toInvoice(InvoiceListByIdResponse.Invoice inv,
