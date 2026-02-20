@@ -8,10 +8,12 @@ import java.util.List;
 public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     private final ContractorService contractorService;
+    private final CompanyService companyService;
 
     public SaldeoSmartInvoicingProvider(String apiUrl, String username, String apiToken, String companyProgramId) {
         SaldeoSmartHttpClient httpClient = new SaldeoSmartHttpClient(apiUrl, username, apiToken);
         this.contractorService = new ContractorService(httpClient, companyProgramId);
+        this.companyService = new CompanyService(httpClient, companyProgramId);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     @Override
     public BillingParty fetchCostCenterById(String costCenterId) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return companyService.fetchCostCenter();
     }
 
     @Override
