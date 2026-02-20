@@ -9,11 +9,13 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     private final ContractorService contractorService;
     private final CompanyService companyService;
+    private final InvoiceService invoiceService;
 
     public SaldeoSmartInvoicingProvider(String apiUrl, String username, String apiToken, String companyProgramId) {
         SaldeoSmartHttpClient httpClient = new SaldeoSmartHttpClient(apiUrl, username, apiToken);
         this.contractorService = new ContractorService(httpClient, companyProgramId);
         this.companyService = new CompanyService(httpClient, companyProgramId);
+        this.invoiceService = new InvoiceService(httpClient, companyProgramId);
     }
 
     @Override
@@ -23,7 +25,7 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     @Override
     public Invoice fetchInvoiceById(String invoiceId, InvoiceDirection direction) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return invoiceService.fetchById(invoiceId, direction);
     }
 
     @Override
@@ -33,7 +35,7 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     @Override
     public Invoice fetchInvoiceWithPositions(String invoiceId, InvoiceDirection direction) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return invoiceService.fetchById(invoiceId, direction);
     }
 
     @Override
