@@ -19,7 +19,12 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
 
     @Override
     public Invoice createInvoice(InvoiceRequest request) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (request.invoiceKind() != InvoiceKind.Standard) {
+            throw new UnsupportedOperationException(
+                    "SaldeoSMART provider supports only Standard invoices, got: " + request.invoiceKind());
+        }
+        String contractorId = contractorService.findOrCreate(request.billingParty());
+        return invoiceService.create(request, contractorId);
     }
 
     @Override

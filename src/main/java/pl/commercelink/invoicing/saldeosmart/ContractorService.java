@@ -43,6 +43,40 @@ class ContractorService {
         return response.contractors != null ? response.contractors : List.of();
     }
 
+    String findOrCreate(BillingParty billingParty) {
+        ContractorMergeRequest.ContractorData data = new ContractorMergeRequest.ContractorData();
+        data.contractorProgramId = billingParty.id();
+        data.shortName = billingParty.hasShortcut() ? billingParty.shortcut() : billingParty.id();
+        data.fullName = billingParty.hasTaxId()
+                ? billingParty.company()
+                : (billingParty.name() + " " + billingParty.surname());
+        data.vatNumber = billingParty.taxNo();
+        data.street = billingParty.streetAndNumber();
+        data.postcode = billingParty.postalCode();
+        data.city = billingParty.city();
+        data.country = billingParty.country();
+        data.customer = true;
+
+        ContractorMergeRequest request = ContractorMergeRequest.of(data);
+        ContractorMergeResponse response = httpClient.post(
+                "/api/xml/1.0/contractor/merge",
+                Map.of("company_program_id", companyProgramId),
+                request,
+                ContractorMergeResponse.class
+        );
+        if (!"OK".equals(response.status)) {
+            throw new RuntimeException("contractor.merge failed: " + response.errorCode + " " + response.errorMessage);
+        }
+        if (response.contractors == null || response.contractors.isEmpty()) {
+            throw new RuntimeException("contractor.merge returned no results");
+        }
+        ContractorMergeResponse.ContractorResult result = response.contractors.getFirst();
+        if ("NOT_VALID".equals(result.status) || "CONFLICT".equals(result.status)) {
+            throw new RuntimeException("contractor.merge failed for contractor: " + result.status + " " + result.statusMessage);
+        }
+        return result.contractorId;
+    }
+
     private BillingParty toBillingParty(Contractor contractor) {
         return ContractorMapper.toBillingParty(contractor);
     }
