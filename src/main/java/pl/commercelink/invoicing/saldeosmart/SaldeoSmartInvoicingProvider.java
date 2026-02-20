@@ -2,7 +2,6 @@ package pl.commercelink.invoicing.saldeosmart;
 
 import pl.commercelink.invoicing.api.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
@@ -29,8 +28,8 @@ public class SaldeoSmartInvoicingProvider implements InvoicingProvider {
     }
 
     @Override
-    public List<Invoice> fetchInvoices(LocalDate dateFrom, LocalDate dateTo, InvoiceDirection direction) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public List<Invoice> fetchInvoicesByOrderId(String orderId, InvoiceDirection direction) {
+        return List.of();
     }
 
     @Override
