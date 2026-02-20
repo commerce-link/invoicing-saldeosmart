@@ -19,12 +19,18 @@ class InvoiceService {
     Invoice fetchById(String invoiceId, InvoiceDirection direction) {
         InvoiceListByIdResponse response = fetchRawResponse(invoiceId);
         InvoiceListByIdResponse.Invoice invoice = findInvoice(response, invoiceId);
+        if (invoice == null) {
+            return null;
+        }
         return toInvoice(invoice, response.contractors, direction);
     }
 
     byte[] fetchPdf(String invoiceId) {
         InvoiceListByIdResponse response = fetchRawResponse(invoiceId);
         InvoiceListByIdResponse.Invoice invoice = findInvoice(response, invoiceId);
+        if (invoice == null) {
+            throw new RuntimeException("Invoice not found: " + invoiceId);
+        }
         if (invoice.source == null || invoice.source.isBlank()) {
             throw new RuntimeException("No PDF source for invoice: " + invoiceId);
         }
@@ -47,12 +53,12 @@ class InvoiceService {
 
     private InvoiceListByIdResponse.Invoice findInvoice(InvoiceListByIdResponse response, String invoiceId) {
         if (response.invoices == null || response.invoices.isEmpty()) {
-            throw new RuntimeException("Invoice not found: " + invoiceId);
+            return null;
         }
         return response.invoices.stream()
                 .filter(i -> invoiceId.equals(i.invoiceId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Invoice not found in response: " + invoiceId));
+                .orElse(null);
     }
 
     private Invoice toInvoice(InvoiceListByIdResponse.Invoice inv,

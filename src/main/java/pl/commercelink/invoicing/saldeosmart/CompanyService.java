@@ -26,7 +26,7 @@ class CompanyService {
         }
         List<CompanyListResponse.Company> companies = response.companies;
         if (companies == null || companies.isEmpty()) {
-            throw new RuntimeException("Company not found for companyProgramId: " + companyProgramId);
+            return null;
         }
         return toBillingParty(companies.getFirst());
     }

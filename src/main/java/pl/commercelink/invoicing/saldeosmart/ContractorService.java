@@ -20,7 +20,7 @@ class ContractorService {
                 .filter(c -> billingPartyId.equals(c.contractorId))
                 .findFirst()
                 .map(this::toBillingParty)
-                .orElseThrow(() -> new RuntimeException("Contractor not found: " + billingPartyId));
+                .orElse(null);
     }
 
     BillingParty fetchByShortcut(String shortcut) {
@@ -28,7 +28,7 @@ class ContractorService {
                 .filter(c -> shortcut.equals(c.shortName))
                 .findFirst()
                 .map(this::toBillingParty)
-                .orElseThrow(() -> new RuntimeException("Contractor not found by shortcut: " + shortcut));
+                .orElse(null);
     }
 
     private List<Contractor> fetchContractors() {
